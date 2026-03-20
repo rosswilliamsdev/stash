@@ -35,8 +35,11 @@ export default function DashboardLayout({
             <h1 className="text-xl font-semibold">Stash</h1>
           </div>
 
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
+          {/* Left Spacer */}
+          <div className="flex-1" />
+
+          {/* Search - Centered */}
+          <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
@@ -45,7 +48,7 @@ export default function DashboardLayout({
             />
           </div>
 
-          {/* Spacer */}
+          {/* Right Spacer */}
           <div className="flex-1" />
 
           {/* New Item Button */}
