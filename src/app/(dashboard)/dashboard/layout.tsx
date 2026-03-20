@@ -1,6 +1,13 @@
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SidebarMobile } from "@/components/layout/Sidebar";
+import {
+  mockUser,
+  mockItemTypes,
+  mockItemTypeCounts,
+  mockCollections,
+} from "@/lib/mock-data";
 
 export default function DashboardLayout({
   children,
@@ -12,6 +19,14 @@ export default function DashboardLayout({
       {/* Top Bar */}
       <header className="border-b border-border bg-card">
         <div className="flex h-16 items-center gap-4 px-6">
+          {/* Mobile Sidebar Trigger */}
+          <SidebarMobile
+            itemTypes={mockItemTypes}
+            itemTypeCounts={mockItemTypeCounts}
+            collections={mockCollections}
+            user={mockUser}
+          />
+
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
