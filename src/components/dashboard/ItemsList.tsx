@@ -33,15 +33,15 @@ interface Item {
   id: string;
   title: string;
   contentType: string;
-  content?: string;
-  url?: string;
+  content: string | null;
+  url: string | null;
   isPinned: boolean;
   itemTypeId: string;
+  itemType: ItemType;
 }
 
 interface ItemsListProps {
   items: Item[];
-  itemTypes: ItemType[];
   title: string;
   showIcon?: "pin" | "clock";
   emptyMessage?: string;
@@ -49,15 +49,10 @@ interface ItemsListProps {
 
 export function ItemsList({
   items,
-  itemTypes,
   title,
   showIcon = "clock",
   emptyMessage = "No items to display",
 }: ItemsListProps) {
-  const getItemType = (itemTypeId: string) => {
-    return itemTypes.find((type) => type.id === itemTypeId);
-  };
-
   const getIcon = (iconName: string) => {
     const Icon = iconMap[iconName as keyof typeof iconMap];
     return Icon || File;
@@ -82,7 +77,7 @@ export function ItemsList({
       ) : (
         <div className="space-y-2">
           {items.map((item) => {
-            const itemType = getItemType(item.itemTypeId);
+            const itemType = item.itemType;
             if (!itemType) return null;
 
             const Icon = getIcon(itemType.icon);

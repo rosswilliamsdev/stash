@@ -1,28 +1,27 @@
 # Current Feature
 
-Dashboard Collections - Real Data Integration
+Dashboard Items - Real Data Integration
 
 ## Status
 
-✅ Completed
+🚧 In Progress
 
 ## Goals
 
-- Replace dummy collection data in dashboard with real database data
-- Create `src/lib/db/collections.ts` with data fetching functions
-- Fetch collections directly in server component
-- Derive collection card border color from most-used content type
-- Show small icons of all types in that collection
-- Keep current design and layout
-- Update collection stats display
+- Replace dummy item data in dashboard with real database data
+- Create `src/lib/db/items.ts` with data fetching functions
+- Fetch items directly in server component (both pinned and recent items)
+- Item card icon/border derived from the item type
+- Display item type tags and existing UI elements
+- If no pinned items exist, hide that section
+- Update item stats display
 
 ## Notes
 
-- Reference full specifications in @context/features/dashboard-collections-spec.md
+- Reference full specifications in @context/features/dashboard-items-spec.md
 - Keep existing UI design (already implemented with mock data)
 - Screenshot available at @context/screenshots/dashboard-ui-main.png
-- Do not add items underneath collections yet (future feature)
-- Focus on collections grid only for now
+- Focus on items display only (pinned + recent sections)
 
 ## History
 

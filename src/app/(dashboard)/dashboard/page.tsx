@@ -3,13 +3,13 @@ import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionsGrid } from "@/components/dashboard/CollectionsGrid";
 import { ItemsList } from "@/components/dashboard/ItemsList";
 import { getRecentCollections } from "@/lib/db/collections";
+import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items";
 import { prisma } from "@/lib/prisma";
 import {
   mockUser,
   mockItemTypes,
   mockItemTypeCounts,
   mockCollections,
-  mockItems,
 } from "@/lib/mock-data";
 
 export default async function DashboardPage() {
@@ -23,22 +23,23 @@ export default async function DashboardPage() {
     return <div>User not found. Please run: npm run db:seed</div>;
   }
 
-  // Fetch real collections from database
+  // Fetch real data from database
   const collections = await getRecentCollections(demoUser.id, 6);
+  const pinnedItems = await getPinnedItems(demoUser.id, 5);
+  const recentItems = await getRecentItems(demoUser.id, 10);
+  const itemStats = await getItemStats(demoUser.id);
 
-  // Calculate stats (still using mock data for now)
-  const totalItems = mockItems.length;
-  const totalCollections = mockCollections.length;
-  const favoriteItems = mockItems.filter((item) => item.isFavorite).length;
-  const favoriteCollections = mockCollections.filter(
-    (col) => col.isFavorite
-  ).length;
+  // Calculate collection stats
+  const collectionCount = await prisma.collection.count({
+    where: { userId: demoUser.id },
+  });
 
-  // Get pinned items (still using mock data for now)
-  const pinnedItems = mockItems.filter((item) => item.isPinned);
-
-  // Get 10 most recent items (still using mock data for now)
-  const recentItems = mockItems.slice(0, 10);
+  const favoriteCollectionCount = await prisma.collection.count({
+    where: {
+      userId: demoUser.id,
+      isFavorite: true,
+    },
+  });
 
   return (
     <>
@@ -54,10 +55,10 @@ export default async function DashboardPage() {
       <main className="flex-1 overflow-y-auto p-6 space-y-8">
         {/* Stats Cards */}
         <StatsCards
-          totalItems={totalItems}
-          totalCollections={totalCollections}
-          favoriteItems={favoriteItems}
-          favoriteCollections={favoriteCollections}
+          totalItems={itemStats.total}
+          totalCollections={collectionCount}
+          favoriteItems={itemStats.favorites}
+          favoriteCollections={favoriteCollectionCount}
         />
 
         {/* Collections - Now using real data! */}
@@ -67,7 +68,6 @@ export default async function DashboardPage() {
         {pinnedItems.length > 0 && (
           <ItemsList
             items={pinnedItems}
-            itemTypes={mockItemTypes}
             title="Pinned Items"
             showIcon="pin"
             emptyMessage="No pinned items"
@@ -77,7 +77,6 @@ export default async function DashboardPage() {
         {/* Recent Items */}
         <ItemsList
           items={recentItems}
-          itemTypes={mockItemTypes}
           title="Recent Items"
           showIcon="clock"
           emptyMessage="No recent items"
