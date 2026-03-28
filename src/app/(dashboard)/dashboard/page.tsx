@@ -2,6 +2,8 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionsGrid } from "@/components/dashboard/CollectionsGrid";
 import { ItemsList } from "@/components/dashboard/ItemsList";
+import { getRecentCollections } from "@/lib/db/collections";
+import { prisma } from "@/lib/prisma";
 import {
   mockUser,
   mockItemTypes,
@@ -10,8 +12,21 @@ import {
   mockItems,
 } from "@/lib/mock-data";
 
-export default function DashboardPage() {
-  // Calculate stats
+export default async function DashboardPage() {
+  // TODO: Get real user ID from auth session
+  // For now, looking up demo user from seed data
+  const demoUser = await prisma.user.findUnique({
+    where: { email: "demo@stash.io" },
+  });
+
+  if (!demoUser) {
+    return <div>User not found. Please run: npm run db:seed</div>;
+  }
+
+  // Fetch real collections from database
+  const collections = await getRecentCollections(demoUser.id, 6);
+
+  // Calculate stats (still using mock data for now)
   const totalItems = mockItems.length;
   const totalCollections = mockCollections.length;
   const favoriteItems = mockItems.filter((item) => item.isFavorite).length;
@@ -19,10 +34,10 @@ export default function DashboardPage() {
     (col) => col.isFavorite
   ).length;
 
-  // Get pinned items
+  // Get pinned items (still using mock data for now)
   const pinnedItems = mockItems.filter((item) => item.isPinned);
 
-  // Get 10 most recent items (mock data doesn't have timestamps, so just take first 10)
+  // Get 10 most recent items (still using mock data for now)
   const recentItems = mockItems.slice(0, 10);
 
   return (
@@ -45,8 +60,8 @@ export default function DashboardPage() {
           favoriteCollections={favoriteCollections}
         />
 
-        {/* Collections */}
-        <CollectionsGrid collections={mockCollections} />
+        {/* Collections - Now using real data! */}
+        <CollectionsGrid collections={collections} />
 
         {/* Pinned Items */}
         {pinnedItems.length > 0 && (

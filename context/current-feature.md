@@ -1,53 +1,28 @@
 # Current Feature
 
-Database Seed Script
+Dashboard Collections - Real Data Integration
 
 ## Status
 
-Completed
+✅ Completed
 
 ## Goals
 
-- Create `prisma/seed.ts` script to populate development database with sample data
-- Add demo user (demo@stash.io / password: 12345678)
-- Create all 7 system item types (snippet, prompt, command, note, file, image, link)
-- Create 5 collections with mixed content types:
-  - React Patterns (3 snippets)
-  - AI Workflows (3 prompts)
-  - DevOps (1 snippet, 1 command, 2 links)
-  - Terminal Commands (4 commands)
-  - Design Resources (4 links)
-- Generate realistic content for each item
-- Set up `prisma db seed` command in package.json
+- Replace dummy collection data in dashboard with real database data
+- Create `src/lib/db/collections.ts` with data fetching functions
+- Fetch collections directly in server component
+- Derive collection card border color from most-used content type
+- Show small icons of all types in that collection
+- Keep current design and layout
+- Update collection stats display
 
 ## Notes
 
-- Password hashing: use bcryptjs with 12 rounds
-- Reference full specifications in @context/features/seed-spec.md
-- Use real URLs for link items
-- Content should be realistic and useful (not Lorem Ipsum)
-- Ensure all relationships (ItemType, Collection, ItemCollection, ItemTag) are properly created
-
-## Implementation Notes
-
-- Installed bcryptjs for password hashing (12 rounds as specified)
-- Created comprehensive seed script at [prisma/seed.ts](../prisma/seed.ts) with:
-  - Demo user (demo@stash.io / 12345678)
-  - All 7 system item types with correct colors and icons
-  - 5 collections with realistic content:
-    - React Patterns: 3 TypeScript snippets (hooks and patterns)
-    - AI Workflows: 3 AI prompts (code review, documentation, refactoring)
-    - DevOps: 1 Dockerfile snippet, 1 deployment command, 2 docs links
-    - Terminal Commands: 4 useful shell commands
-    - Design Resources: 4 design/component library links
-  - 20 total items with realistic, useful content (not Lorem Ipsum)
-  - 9 tags properly linked to items
-- Added `db:seed` npm script for manual execution
-- Added `prisma.seed` config for automatic seeding with `prisma migrate dev`
-- Used `dotenv/config` to load environment variables
-- Imported configured Prisma client from `src/lib/prisma.ts`
-- Seed script includes data cleanup and summary output
-- Build passing with no errors
+- Reference full specifications in @context/features/dashboard-collections-spec.md
+- Keep existing UI design (already implemented with mock data)
+- Screenshot available at @context/screenshots/dashboard-ui-main.png
+- Do not add items underneath collections yet (future feature)
+- Focus on collections grid only for now
 
 ## History
 
@@ -58,3 +33,5 @@ Completed
 - **2026-03-20**: Dashboard Phase 2 completed. Implemented collapsible sidebar with item types (all 7 system types with counts and color-coded icons), favorite and recent collections sections, user avatar area, mobile drawer functionality, and responsive design. Switched main font from Geist to Inter with sans-serif fallback. Created placeholder routes for /items/[type] and /collections/[id].
 - **2026-03-20**: Dashboard Phase 3 completed. Implemented main content area with stats cards (4 metrics), collections grid with responsive layout and hover glow effects, pinned items section, and recent items section (10 items). Centered search bar in header. Created reusable dashboard components: StatsCards, CollectionsGrid, and ItemsList. All sections integrate mock data with dynamic stat calculations. Dashboard UI now fully functional with all 3 phases complete.
 - **2026-03-21**: Prisma + Neon PostgreSQL setup completed. Upgraded Node.js to 22.22.1 (required for Prisma 7). Installed Prisma 7 and dependencies. Created complete schema with all models (User, NextAuth models, Item, ItemType, Collection, Tag, join tables). Added performance indexes on frequently queried fields. Created initial migration. Set up Prisma client with standard `pg` driver (workaround for Neon adapter compatibility issue in Prisma 7.5.0). Database connection verified and build passing. Created test script at [scripts/test-db.ts](scripts/test-db.ts) for database testing.
+- **2026-03-26**: Database seed script completed. Created comprehensive seed script with demo user (demo@stash.io), all 7 system item types, 5 collections with realistic content (20 items total), and proper tag relationships. Configured npm scripts for seeding. Build passing.
+- **2026-03-26**: Dashboard collections real data integration completed. Created `src/lib/db/collections.ts` with `getCollectionsWithStats()` and `getRecentCollections()` functions. Implemented sophisticated data aggregation: joins through ItemCollection to fetch all items, counts item types to determine dominant type for border color, extracts unique type icons for display. Dashboard page now fetches real collections from database and displays with proper color-coded borders, type icons, item counts, and favorite indicators. Created test script at [scripts/test-collections.ts](scripts/test-collections.ts) for verification. All 5 seeded collections displaying correctly. Build passing.
