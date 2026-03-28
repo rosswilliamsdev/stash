@@ -2,15 +2,18 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { CollectionsGrid } from "@/components/dashboard/CollectionsGrid";
 import { ItemsList } from "@/components/dashboard/ItemsList";
-import { getRecentCollections } from "@/lib/db/collections";
-import { getPinnedItems, getRecentItems, getItemStats } from "@/lib/db/items";
-import { prisma } from "@/lib/prisma";
 import {
-  mockUser,
-  mockItemTypes,
-  mockItemTypeCounts,
-  mockCollections,
-} from "@/lib/mock-data";
+  getRecentCollections,
+  getAllCollectionsForSidebar,
+} from "@/lib/db/collections";
+import {
+  getPinnedItems,
+  getRecentItems,
+  getItemStats,
+  getSystemItemTypes,
+  getItemTypeCounts,
+} from "@/lib/db/items";
+import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
   // TODO: Get real user ID from auth session
@@ -24,10 +27,13 @@ export default async function DashboardPage() {
   }
 
   // Fetch real data from database
-  const collections = await getRecentCollections(demoUser.id, 6);
+  const dashboardCollections = await getRecentCollections(demoUser.id, 6);
+  const sidebarCollections = await getAllCollectionsForSidebar(demoUser.id);
   const pinnedItems = await getPinnedItems(demoUser.id, 5);
   const recentItems = await getRecentItems(demoUser.id, 10);
   const itemStats = await getItemStats(demoUser.id);
+  const itemTypes = await getSystemItemTypes();
+  const itemTypeCounts = await getItemTypeCounts(demoUser.id);
 
   // Calculate collection stats
   const collectionCount = await prisma.collection.count({
@@ -41,14 +47,23 @@ export default async function DashboardPage() {
     },
   });
 
+  // Format user data for sidebar
+  const user = {
+    id: demoUser.id,
+    name: demoUser.name,
+    email: demoUser.email,
+    isPro: demoUser.isPro,
+    image: demoUser.image,
+  };
+
   return (
     <>
       {/* Sidebar */}
       <Sidebar
-        itemTypes={mockItemTypes}
-        itemTypeCounts={mockItemTypeCounts}
-        collections={mockCollections}
-        user={mockUser}
+        itemTypes={itemTypes}
+        itemTypeCounts={itemTypeCounts}
+        collections={sidebarCollections}
+        user={user}
       />
 
       {/* Main Content */}
@@ -62,7 +77,7 @@ export default async function DashboardPage() {
         />
 
         {/* Collections - Now using real data! */}
-        <CollectionsGrid collections={collections} />
+        <CollectionsGrid collections={dashboardCollections} />
 
         {/* Pinned Items */}
         {pinnedItems.length > 0 && (

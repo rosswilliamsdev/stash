@@ -1,6 +1,17 @@
 import { prisma } from "@/lib/prisma";
 
 /**
+ * Item type information
+ */
+export interface ItemType {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  isSystem: boolean;
+}
+
+/**
  * Extended Item type with ItemType relation for dashboard display
  */
 export interface ItemWithType {
@@ -37,7 +48,7 @@ export interface ItemWithType {
  */
 export async function getPinnedItems(
   userId: string,
-  limit: number = 5
+  limit: number = 5,
 ): Promise<ItemWithType[]> {
   const items = await prisma.item.findMany({
     where: {
@@ -72,7 +83,7 @@ export async function getPinnedItems(
  */
 export async function getRecentItems(
   userId: string,
-  limit: number = 10
+  limit: number = 10,
 ): Promise<ItemWithType[]> {
   const items = await prisma.item.findMany({
     where: {
@@ -144,4 +155,52 @@ export async function getItemStats(userId: string) {
       count: item._count.id,
     })),
   };
+}
+
+/**
+ * Get all system item types in specific order
+ * Order: Snippets, Prompts, Commands, Notes, Links, Images, Files
+ * @returns Array of system item types
+ */
+export async function getSystemItemTypes(): Promise<ItemType[]> {
+  const types = await prisma.itemType.findMany({
+    where: {
+      isSystem: true,
+    },
+  });
+
+  // Sort in desired order
+  const order = [
+    "Snippets",
+    "Prompts",
+    "Commands",
+    "Notes",
+    "Links",
+    "Files",
+    "Images",
+  ];
+  return types.sort((a, b) => {
+    const aIndex = order.indexOf(a.name);
+    const bIndex = order.indexOf(b.name);
+    return aIndex - bIndex;
+  });
+}
+
+/**
+ * Get item counts by type ID for a user
+ * Returns a Record mapping type ID to count
+ * @param userId - The user's ID
+ * @returns Record of type ID to count
+ */
+export async function getItemTypeCounts(
+  userId: string,
+): Promise<Record<string, number>> {
+  const stats = await getItemStats(userId);
+
+  const counts: Record<string, number> = {};
+  stats.byType.forEach((item) => {
+    counts[item.itemTypeId] = item.count;
+  });
+
+  return counts;
 }

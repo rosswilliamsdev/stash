@@ -29,68 +29,71 @@ async function main() {
     },
   });
 
-  // Create system item types
+  // Create system item types in the desired order
+  // Order: Snippets, Prompts, Commands, Files, Notes, Links, Images
   console.log("📦 Creating system item types...");
-  const itemTypes = await Promise.all([
-    prisma.itemType.create({
-      data: {
-        name: "snippet",
-        icon: "Code",
-        color: "#3b82f6",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "prompt",
-        icon: "Sparkles",
-        color: "#8b5cf6",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "command",
-        icon: "Terminal",
-        color: "#f97316",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "note",
-        icon: "StickyNote",
-        color: "#fde047",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "file",
-        icon: "File",
-        color: "#6b7280",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "image",
-        icon: "Image",
-        color: "#ec4899",
-        isSystem: true,
-      },
-    }),
-    prisma.itemType.create({
-      data: {
-        name: "link",
-        icon: "Link",
-        color: "#10b981",
-        isSystem: true,
-      },
-    }),
-  ]);
+  const snippetType = await prisma.itemType.create({
+    data: {
+      name: "Snippets",
+      icon: "Code",
+      color: "#3b82f6",
+      isSystem: true,
+    },
+  });
 
-  const [snippetType, promptType, commandType, noteType, fileType, imageType, linkType] = itemTypes;
+  const promptType = await prisma.itemType.create({
+    data: {
+      name: "Prompts",
+      icon: "Sparkles",
+      color: "#8b5cf6",
+      isSystem: true,
+    },
+  });
+
+  const commandType = await prisma.itemType.create({
+    data: {
+      name: "Commands",
+      icon: "Terminal",
+      color: "#f97316",
+      isSystem: true,
+    },
+  });
+
+  const fileType = await prisma.itemType.create({
+    data: {
+      name: "Files",
+      icon: "File",
+      color: "#6b7280",
+      isSystem: true,
+    },
+  });
+
+  const noteType = await prisma.itemType.create({
+    data: {
+      name: "Notes",
+      icon: "StickyNote",
+      color: "#fde047",
+      isSystem: true,
+    },
+  });
+
+  const linkType = await prisma.itemType.create({
+    data: {
+      name: "Links",
+      icon: "Link",
+      color: "#10b981",
+      isSystem: true,
+    },
+  });
+
+  const imageType = await prisma.itemType.create({
+    data: {
+      name: "Images",
+      icon: "Image",
+      color: "#ec4899",
+      isSystem: true,
+    },
+  });
 
   // Create tags
   console.log("🏷️  Creating tags...");

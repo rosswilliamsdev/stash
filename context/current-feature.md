@@ -1,6 +1,6 @@
 # Current Feature
 
-Dashboard Items - Real Data Integration
+Stats & Sidebar - Real Data Integration
 
 ## Status
 
@@ -8,20 +8,18 @@ Dashboard Items - Real Data Integration
 
 ## Goals
 
-- Replace dummy item data in dashboard with real database data
-- Create `src/lib/db/items.ts` with data fetching functions
-- Fetch items directly in server component (both pinned and recent items)
-- Item card icon/border derived from the item type
-- Display item type tags and existing UI elements
-- If no pinned items exist, hide that section
-- Update item stats display
+- Display stats from database data instead of mock data
+- Display system item types in sidebar with icons, linking to /items/[typename]
+- Add "View all collections" link under collections list → /collections
+- Update favorite collections to show star icons
+- Update recent collections to show colored circles based on most-used item type
+- Create database functions in `src/lib/db/items.ts` if needed
 
 ## Notes
 
-- Reference full specifications in @context/features/dashboard-items-spec.md
-- Keep existing UI design (already implemented with mock data)
-- Screenshot available at @context/screenshots/dashboard-ui-main.png
-- Focus on items display only (pinned + recent sections)
+- Reference full specifications in @context/features/stats-sidebar-spec.md
+- Use @src/lib/db/collections.ts as reference for database functions
+- Keep existing UI design/layout
 
 ## History
 
@@ -34,3 +32,4 @@ Dashboard Items - Real Data Integration
 - **2026-03-21**: Prisma + Neon PostgreSQL setup completed. Upgraded Node.js to 22.22.1 (required for Prisma 7). Installed Prisma 7 and dependencies. Created complete schema with all models (User, NextAuth models, Item, ItemType, Collection, Tag, join tables). Added performance indexes on frequently queried fields. Created initial migration. Set up Prisma client with standard `pg` driver (workaround for Neon adapter compatibility issue in Prisma 7.5.0). Database connection verified and build passing. Created test script at [scripts/test-db.ts](scripts/test-db.ts) for database testing.
 - **2026-03-26**: Database seed script completed. Created comprehensive seed script with demo user (demo@stash.io), all 7 system item types, 5 collections with realistic content (20 items total), and proper tag relationships. Configured npm scripts for seeding. Build passing.
 - **2026-03-26**: Dashboard collections real data integration completed. Created `src/lib/db/collections.ts` with `getCollectionsWithStats()` and `getRecentCollections()` functions. Implemented sophisticated data aggregation: joins through ItemCollection to fetch all items, counts item types to determine dominant type for border color, extracts unique type icons for display. Dashboard page now fetches real collections from database and displays with proper color-coded borders, type icons, item counts, and favorite indicators. Created test script at [scripts/test-collections.ts](scripts/test-collections.ts) for verification. All 5 seeded collections displaying correctly. Build passing.
+- **2026-03-27**: Dashboard items real data integration completed. Created `src/lib/db/items.ts` with `getPinnedItems()` and `getRecentItems()` functions. Integrated real database data for both pinned and recent items sections on dashboard. Item cards now display with type-derived colors, icons, borders, and tags. Pinned section conditionally hidden when no pinned items exist. Dashboard now fully integrated with database for all sections (stats, collections, items). Build passing.

@@ -92,3 +92,13 @@ export async function getRecentCollections(
   const allCollections = await getCollectionsWithStats(userId);
   return allCollections.slice(0, limit);
 }
+
+/**
+ * Fetches all collections for sidebar display
+ * Used by sidebar to show favorites + recent collections
+ */
+export async function getAllCollectionsForSidebar(
+  userId: string
+): Promise<CollectionWithStats[]> {
+  return getCollectionsWithStats(userId);
+}

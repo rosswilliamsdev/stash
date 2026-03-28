@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
@@ -49,9 +48,11 @@ interface ItemType {
 interface Collection {
   id: string;
   name: string;
-  description?: string;
+  description?: string | null;
   isFavorite: boolean;
   itemCount: number;
+  dominantTypeColor?: string;
+  typeIcons?: Array<{ icon: string; color: string }>;
 }
 
 interface User {
@@ -92,7 +93,18 @@ function SidebarContent({
 
   return (
     <div className="flex h-full flex-col">
-      <ScrollArea className="flex-1 px-3">
+      <style>{`
+        .sidebar-scroll::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      <div
+        className="flex-1 overflow-y-auto px-3 sidebar-scroll"
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
+      >
         {/* Types Section */}
         <div className="py-4">
           <button
@@ -202,9 +214,18 @@ function SidebarContent({
                         onClick={onLinkClick}
                         className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent transition-colors group"
                       >
-                        <span className="truncate group-hover:text-foreground transition-colors">
-                          {collection.name}
-                        </span>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div
+                            className="h-2 w-2 rounded-full shrink-0"
+                            style={{
+                              backgroundColor:
+                                collection.dominantTypeColor || "#6b7280",
+                            }}
+                          />
+                          <span className="truncate group-hover:text-foreground transition-colors">
+                            {collection.name}
+                          </span>
+                        </div>
                         <span className="text-xs text-muted-foreground">
                           {collection.itemCount}
                         </span>
@@ -213,10 +234,22 @@ function SidebarContent({
                   </div>
                 </div>
               )}
+
+              {/* View All Collections Link */}
+              <div className="mt-3 px-2">
+                <Link
+                  href="/collections"
+                  onClick={onLinkClick}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <span>View all collections</span>
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* User Section */}
       <div className="border-t border-border p-3">
@@ -258,7 +291,7 @@ export function Sidebar({
   return (
     <aside
       className={cn(
-        "hidden lg:flex w-64 border-r border-border bg-card",
+        "hidden lg:flex w-64 h-full border-r border-border bg-card",
         className
       )}
     >
